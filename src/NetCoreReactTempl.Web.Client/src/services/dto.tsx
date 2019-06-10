@@ -9,12 +9,17 @@ export class AuthInfo extends BaseDto {
     token?: string;
 }
 
-export class Data extends BaseDto {
+export class Fields {
     field1: string;
     field2: Date;
-    field3: boolean;
-    field4: RadioButton
-    field5: DropDown
+    field3: boolean | string;
+    field4: RadioButton;
+    field5: DropDown;
+}
+
+
+export class Data extends BaseDto {
+    fields: Fields;
 }
 
 export enum RadioButton {

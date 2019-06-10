@@ -9,7 +9,7 @@ import { IDataAction, IData } from '../store/Interfaces/IData';
 import { RouterAction } from 'connected-react-router';
 import IAlertAction from '../store/Interfaces/IAlertAction';
 import DataActions from '../actions/data';
-import { Data, RadioButton, DropDown } from '../services/Dto';
+import { Data, RadioButton, DropDown, Fields } from '../services/Dto';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -20,7 +20,7 @@ interface IDataPageState {
     create?: (data: Data) => ThunkAction<void, IStoreState, null, IDataAction | RouterAction | IAlertAction>;
 }
 
-interface State extends Data {
+interface State extends Fields {
     submitted: boolean;
 }
 
@@ -33,7 +33,6 @@ class DataPage extends React.Component<Props, State> {
 
         this.props.clear();
         this.state = {
-            id: 0,
             field1: "",
             field2: new Date(),
             field3: false,
@@ -92,7 +91,7 @@ class DataPage extends React.Component<Props, State> {
         const { field1, field4, field5 } = this.state;
         if (field1 && field4 && field5) {
             ($(this.createRef) as any).modal('hide');
-            this.props.create(this.state);
+            this.props.create({ id: 0, fields: { ...this.state } });
         }
     }
 
@@ -132,7 +131,7 @@ class DataPage extends React.Component<Props, State> {
                     <DatePicker className="form-control" selected={field2} onChange={this.handleChangeDate} aria-describedby="inputGroup-field2" />
                 </div>
                 <div className="form-group form-check mb-3">
-                    <input type="checkbox" className="form-check-input" name="field3" checked={field3} onChange={this.handleChange} id="field3" />
+                    <input type="checkbox" className="form-check-input" name="field3" checked={field3 as boolean} onChange={this.handleChange} id="field3" />
                     <label className="form-check-label" htmlFor="field3">field3 </label>
                 </div>
                 <div className="input-group mb-3">

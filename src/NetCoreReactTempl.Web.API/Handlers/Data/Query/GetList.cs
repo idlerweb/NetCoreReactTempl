@@ -29,30 +29,50 @@ namespace NetCoreReactTempl.Web.API.Handlers.Data.Query
     {
         private readonly IMapper _mapper;
         private readonly IDataManager<DAL.Entities.Data> _dataManager;
+        private readonly IDataManager<DAL.Entities.Field> _fieldsManager;
 
-        public GetListHandler(IDataManager<DAL.Entities.Data> dataManager, IMapper mapper)
+        public GetListHandler(IDataManager<DAL.Entities.Data> dataManager, IDataManager<DAL.Entities.Field> fieldsManager, IMapper mapper)
         {
             _dataManager = dataManager;
+            _fieldsManager = fieldsManager;
             _mapper = mapper;
         }
 
         public async Task<BaseResponse<Dto.Data>> Handle(GetList query, CancellationToken cancellationToken)
         {
-            var collection = _dataManager.GetCollection().Where(d => d.UserId == query.UserId);
-            IQueryable<DAL.Entities.Data> result;
-
             if (query.Search != null)
             {
-                result = collection.Where(d => d.Field1.Contains(query.Search));
+                var ids = _fieldsManager.GetCollection().Where(d => d.Value.Contains(query.Search)).Select(i => i.DataId).Distinct();
+                var datas = _dataManager.GetCollection().Where(d => d.UserId == query.UserId && ids.Contains(d.Id));
+
+                var list = datas.ToList().Select(d =>
+                {
+                    var fields = _fieldsManager.GetCollection().Where(f => f.DataId == d.Id).Select(f => new KeyValuePair<string, string>(f.Name, f.Value)).ToList();
+                    return new Dto.Data()
+                    {
+                        Id = d.Id,
+                        UserId = d.UserId,
+                        Fields = fields.ToDictionary(a => a.Key, a => a.Value)
+                    };
+                }).ToList();
+                return new BaseResponse<Dto.Data>(null, list, await datas.CountAsync());
             }
             else
             {
-                result = collection;
-            }
+                var datas = _dataManager.GetCollection().Where(d => d.UserId == query.UserId);
 
-            return new BaseResponse<Dto.Data>(null,
-                _mapper.Map<List<Dto.Data>>(await result.Skip(query.Skip).Take(query.Top).ToListAsync()),
-                await collection.CountAsync());
+                var list = datas.ToList().Select(d =>
+                {
+                    var fields = _fieldsManager.GetCollection().Where(f => f.DataId == d.Id).Select(f => new KeyValuePair<string, string>(f.Name, f.Value)).ToList();
+                    return new Dto.Data()
+                    {
+                        Id = d.Id,
+                        UserId = d.UserId,
+                        Fields = fields.ToDictionary(a => a.Key, a => a.Value)
+                    };
+                }).ToList();
+                return new BaseResponse<Dto.Data>(null, list, await datas.CountAsync());
+            }
         }
     }
 

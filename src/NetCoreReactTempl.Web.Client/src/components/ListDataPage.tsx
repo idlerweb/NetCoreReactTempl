@@ -104,11 +104,11 @@ class ListDataPage extends React.Component<Props, State> {
                             {list.map(p =>
                                 <tr key={p.id}>
                                     <th scope="row">{p.id}</th>
-                                    <td>{p.field1}</td>
-                                    <td>{p.field2}</td>
-                                    <td>{p.field3 && `true`}{!p.field3 && `false`}</td>
-                                    <td>{p.field4}</td>
-                                    <td>{p.field5}</td>  
+                                    <td>{p.fields.field1}</td>
+                                    <td>{p.fields.field2}</td>
+                                    <td>{p.fields.field3}</td>
+                                    <td>{p.fields.field4}</td>
+                                    <td>{p.fields.field5}</td>  
                                     <td>
                                         <Link to={`/print/${p.id}`}>Print</Link>
                                     </td>

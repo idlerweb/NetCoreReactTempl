@@ -9,5 +9,7 @@ namespace NetCoreReactTempl.DAL
 
         public DbSet<User> Users { get; set; }
         public DbSet<Data> Datas { get; set; }
+        public DbSet<Field> Fields { get; set; }
+
     }
 }

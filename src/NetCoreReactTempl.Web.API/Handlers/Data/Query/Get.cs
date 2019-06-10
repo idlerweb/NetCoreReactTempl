@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using NetCoreReactTempl.DAL.Interfaces;
 using NetCoreReactTempl.Web.API.Handlers.Abstractions;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,16 +22,25 @@ namespace NetCoreReactTempl.Web.API.Handlers.Data.Query
     {
         private readonly IMapper _mapper;
         private readonly IDataManager<DAL.Entities.Data> _dataManager;
+        private readonly IDataManager<DAL.Entities.Field> _fieldsManager;
 
-        public GetHandler(IDataManager<DAL.Entities.Data> dataManager, IMapper mapper)
+        public GetHandler(IDataManager<DAL.Entities.Data> dataManager, IDataManager<DAL.Entities.Field> fieldsManager, IMapper mapper)
         {
             _dataManager = dataManager;
+            _fieldsManager = fieldsManager;
             _mapper = mapper;
         }
 
         public async Task<BaseResponse<Dto.Data>> Handle(Get query, CancellationToken cancellationToken)
         {
-            return new BaseResponse<Dto.Data>(_mapper.Map<Dto.Data>(await _dataManager.GetAsync(query.Id)), null, 0);
+            var data = await _dataManager.GetAsync(query.Id);
+            var fields = await _fieldsManager.GetCollection().Where(f => f.DataId == data.Id).Select(f => new KeyValuePair<string, string>(f.Name, f.Value)).ToListAsync();
+            var result = new Dto.Data() {
+                Id = data.Id,
+                UserId = data.UserId,
+                Fields = fields.ToDictionary(a => a.Key, a => a.Value)
+            };
+            return new BaseResponse<Dto.Data>(result, null, 0);
         }
     }
 

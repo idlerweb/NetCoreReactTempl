@@ -78,6 +78,7 @@ namespace NetCoreReactTempl.Web.API
 
             services.AddScoped<IDataManager<User>, DataManager<User>>();
             services.AddScoped<IDataManager<Data>, DataManager<Data>>();
+            services.AddScoped<IDataManager<Field>, DataManager<Field>>();
             services.AddSingleton<ConfigurationStore>();
                        
 

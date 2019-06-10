@@ -19,19 +19,34 @@ namespace NetCoreReactTempl.Web.API.Handlers.Data.Command
     {
         private readonly IMapper _mapper;
         private readonly IDataManager<DAL.Entities.Data> _dataManager;
+        private readonly IDataManager<DAL.Entities.Field> _fieldsManager;
 
-        public CreateHandler(IDataManager<DAL.Entities.Data> dataManager, IMapper mapper)
+        public CreateHandler(IDataManager<DAL.Entities.Data> dataManager, IDataManager<DAL.Entities.Field> fieldsManager, IMapper mapper)
         {
             _dataManager = dataManager;
+            _fieldsManager = fieldsManager;
             _mapper = mapper;
         }
 
         public async Task<BaseResponse<Dto.Data>> Handle(Create command, CancellationToken cancellationToken)
         {
-            var enter = _mapper.Map<DAL.Entities.Data>(command.Data);
-            enter.UserId = command.UserId;
-            var entity = await _dataManager.CreateAsync(enter);
-            return new BaseResponse<Dto.Data>(_mapper.Map<Dto.Data>(entity), null, 0);
+            var data = await _dataManager.CreateAsync(new DAL.Entities.Data() {
+                UserId = command.UserId
+            });
+
+            foreach (var field in command.Data.Fields) {
+                 await _fieldsManager.CreateAsync(new DAL.Entities.Field()
+                {
+                    DataId = data.Id,
+                    Name = field.Key,
+                    Value = field.Value
+                });
+            }
+            return new BaseResponse<Dto.Data>(new Dto.Data() {
+                Id = data.Id,
+                UserId = data.UserId,
+                Fields =  command.Data.Fields
+            }, null, 0);
         }
     }
 
