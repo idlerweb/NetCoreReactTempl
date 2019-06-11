@@ -1,8 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
-using NetCoreReactTempl.DAL.Entities;
 using NetCoreReactTempl.DAL.Interfaces;
-using NetCoreReactTempl.Web.API.Dto;
 using NetCoreReactTempl.Web.API.Handlers.Abstractions;
 using System.Threading;
 using System.Threading.Tasks;

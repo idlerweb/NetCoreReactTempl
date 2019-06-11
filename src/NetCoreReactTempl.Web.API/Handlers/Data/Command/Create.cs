@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using FluentValidation;
+﻿using FluentValidation;
 using MediatR;
 using NetCoreReactTempl.DAL.Interfaces;
 using NetCoreReactTempl.Web.API.Handlers.Abstractions;
@@ -17,15 +16,13 @@ namespace NetCoreReactTempl.Web.API.Handlers.Data.Command
 
     public class CreateHandler : IRequestHandler<Create, BaseResponse<Dto.Data>>
     {
-        private readonly IMapper _mapper;
         private readonly IDataManager<DAL.Entities.Data> _dataManager;
         private readonly IDataManager<DAL.Entities.Field> _fieldsManager;
 
-        public CreateHandler(IDataManager<DAL.Entities.Data> dataManager, IDataManager<DAL.Entities.Field> fieldsManager, IMapper mapper)
+        public CreateHandler(IDataManager<DAL.Entities.Data> dataManager, IDataManager<DAL.Entities.Field> fieldsManager)
         {
             _dataManager = dataManager;
             _fieldsManager = fieldsManager;
-            _mapper = mapper;
         }
 
         public async Task<BaseResponse<Dto.Data>> Handle(Create command, CancellationToken cancellationToken)

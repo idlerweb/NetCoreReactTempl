@@ -1,12 +1,12 @@
 ﻿import AlertActions from './alert';
 import DataConstants from '../constants/data';
 import IAlertAction from '../store/Interfaces/IAlertAction';
-import { RouterAction, push } from 'connected-react-router';
+import { RouterAction } from 'connected-react-router';
 import { IDataAction } from '../store/Interfaces/IData';
 import IStoreState from '../store/Interfaces/IStoreState';
 import { ThunkAction } from 'redux-thunk';
 import { Data } from '../services/dto';
-import { RestService, IRestResponseBase } from '../services/restService';
+import { RestService } from '../services/restService';
 
 export default class DataActions {
 
@@ -70,10 +70,8 @@ export default class DataActions {
 
     static sortList(list: Data[], field: string, sortAsc: boolean, count: number): ThunkAction<void, IStoreState, null, IDataAction | RouterAction | IAlertAction> {
         return dispatch => {
-            if (sortAsc)
-                var listSort = { list: list.sort((a, b) => a[field] - b[field]).map(po => po) };
-            else
-                var listSort = { list: list.sort((a, b) => b[field] - a[field]).map(po => po) };
+            let listSort = sortAsc ? { list: list.sort((a, b) => a[field] - b[field]).map(po => po) }
+                : { list: list.sort((a, b) => b[field] - a[field]).map(po => po) };
 
             dispatch({
                 type: DataConstants.SORTDATA, response: {

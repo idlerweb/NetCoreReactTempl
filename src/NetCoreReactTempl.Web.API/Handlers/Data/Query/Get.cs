@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using FluentValidation;
+﻿using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NetCoreReactTempl.DAL.Interfaces;
@@ -20,15 +19,13 @@ namespace NetCoreReactTempl.Web.API.Handlers.Data.Query
 
     public class GetHandler : IRequestHandler<Get, BaseResponse<Dto.Data>>
     {
-        private readonly IMapper _mapper;
         private readonly IDataManager<DAL.Entities.Data> _dataManager;
         private readonly IDataManager<DAL.Entities.Field> _fieldsManager;
 
-        public GetHandler(IDataManager<DAL.Entities.Data> dataManager, IDataManager<DAL.Entities.Field> fieldsManager, IMapper mapper)
+        public GetHandler(IDataManager<DAL.Entities.Data> dataManager, IDataManager<DAL.Entities.Field> fieldsManager)
         {
             _dataManager = dataManager;
             _fieldsManager = fieldsManager;
-            _mapper = mapper;
         }
 
         public async Task<BaseResponse<Dto.Data>> Handle(Get query, CancellationToken cancellationToken)

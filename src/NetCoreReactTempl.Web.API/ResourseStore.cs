@@ -9,5 +9,7 @@ namespace NetCoreReactTempl.Web.API
         {
             _localizer = localizer;
         }
+
+        public string Example => _localizer["Example"];
     }
 }
