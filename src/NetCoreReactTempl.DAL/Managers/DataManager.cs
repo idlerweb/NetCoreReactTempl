@@ -1,35 +1,44 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using NetCoreReactTempl.DAL.Entities;
-using NetCoreReactTempl.DAL.Interfaces;
+using NetCoreReactTempl.Domain.Models;
+using NetCoreReactTempl.Domain.Repositories;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace NetCoreReactTempl.DAL.Managers
 {
-    public class DataManager<T> : IDataManager<T> where T : BaseEntity
+    public class DataManager<TEntity, TModel> : IDataManager<TModel> where TEntity : BaseEntity
+                                                                     where TModel : BaseModel
     {
         private readonly DataContext _context;
-        private readonly IQueryable<T> _collection;
+        private readonly IQueryable<TEntity> _collection;
+        private readonly IMapper _mapper;
 
-        public DataManager(DataContext context)
+        public DataManager(DataContext context, IMapper mapper)
         {
-            _context = context;            
-            var propertyInfo = _context.GetType().GetProperty($"{typeof(T).Name}s");
-            _collection = propertyInfo.GetValue(_context, null) as IQueryable<T>;
+            _context = context;
+            var propertyInfo = _context.GetType().GetProperty($"{typeof(TEntity).Name}s");
+            _collection = propertyInfo.GetValue(_context, null) as IQueryable<TEntity>;
+            _mapper = mapper;
         }
 
-        public IQueryable<T> GetCollection() => _collection;
-        public async Task<T> GetAsync(long id) => await _collection.FirstOrDefaultAsync(x => x.Id == id);
+        public async Task<IEnumerable<TModel>> GetCollection() => (await _collection.ToArrayAsync()).Select(c => _mapper.Map<TModel>(c));
 
-        public async Task<T> CreateAsync(T entity)
+        public async Task<TModel> GetAsync(long id) => _mapper.Map<TModel>(await _collection.FirstOrDefaultAsync(x => x.Id == id));
+
+        public async Task<TModel> CreateAsync(TModel model)
         {
+            var entity = _mapper.Map<TEntity>(model);
             _context.Add(entity);
             await _context.SaveChangesAsync();
-            return entity;
+            return _mapper.Map<TModel>(entity);
         }
 
-        public async Task<T> UpdateAsync(T entity)
+        public async Task<TModel> UpdateAsync(TModel model)
         {
+            var entity = _mapper.Map<TEntity>(model);
             var entityDest = await _collection.FirstOrDefaultAsync(e => e.Id == entity.Id);
             var entityDestProperties = entityDest.GetType().GetProperties().Where(p => !string.Equals(p.Name, "Id")
                                                                                     || !string.Equals(p.Name, "User")
@@ -43,7 +52,7 @@ namespace NetCoreReactTempl.DAL.Managers
                 property.SetValue(entityDest, value, null);
             }
             await _context.SaveChangesAsync();
-            return entityDest;
+            return _mapper.Map<TModel>(entityDest);
         }
 
         public async Task DeleteAsync(long id)

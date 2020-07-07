@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
@@ -7,13 +8,15 @@ namespace NetCoreReactTempl.Web.API.Controllers.Abstractions
 {
     public abstract class CommonController<TContrller> : ControllerBase where TContrller : class
     {
-        protected readonly IMediator _mediator;
-        protected readonly ILogger<TContrller> _logger;
+        protected readonly IMediator Mediator;
+        protected readonly IMapper Mapper;
+        protected readonly ILogger<TContrller> Logger;
 
-        public CommonController(IMediator mediator, ILogger<TContrller> logger)
+        public CommonController(IMediator mediator, IMapper mapper, ILogger<TContrller> logger)
         {
-            _mediator = mediator;
-            _logger = logger;
+            Mediator = mediator;
+            Mapper = mapper;
+            Logger = logger;
         }
 
         protected long UserId

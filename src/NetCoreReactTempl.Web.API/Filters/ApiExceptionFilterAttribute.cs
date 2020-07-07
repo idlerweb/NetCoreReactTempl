@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using NetCoreReactTempl.Domain.ApiExceptions;
 using NetCoreReactTempl.Web.API.ApiExceptions;
 using System.Linq;
 
@@ -19,7 +20,7 @@ namespace NetCoreReactTempl.Web.API.Filters
 
                 context.HttpContext.Response.StatusCode = 400;
             }
-            else if(context.Exception is UnauthorizedException)
+            else if (context.Exception is UnauthorizedException)
             {
                 var ex = context.Exception as UnauthorizedException;
                 context.Exception = null;
@@ -28,7 +29,7 @@ namespace NetCoreReactTempl.Web.API.Filters
                 context.HttpContext.Response.StatusCode = 401;
             }
             else
-            {                
+            {
                 apiException = new ApiException(null, context.Exception.Message, 500);
                 context.Exception = null;
                 context.HttpContext.Response.StatusCode = 500;

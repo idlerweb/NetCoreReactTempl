@@ -1,9 +1,10 @@
 ﻿using Microsoft.Extensions.Options;
+using NetCoreReactTempl.Domain.Configuration;
 using System.Collections.Generic;
 
 namespace NetCoreReactTempl.Web.API
 {
-    public class ConfigurationStore
+    public class ConfigurationStore : IConfigurationStore
     {
         readonly Dictionary<string, string> _configuration;
 
