@@ -17,7 +17,7 @@ namespace NetCoreReactTempl.App.Handlers.Data.Command
             : base(id, userId, data) { }
     }
 
-    public class UpdateHandler : IRequestHandler<Update, BaseModel>
+    public class UpdateHandler : IRequestHandler<Update, Domain.Models.Data>
     {
         private readonly IMapper _mapper;
         private readonly IDataManager<Domain.Models.Data> _dataManager;
@@ -28,12 +28,12 @@ namespace NetCoreReactTempl.App.Handlers.Data.Command
             _mapper = mapper;
         }
 
-        public async Task<BaseModel> Handle(Update command, CancellationToken cancellationToken)
+        public async Task<Domain.Models.Data> Handle(Update command, CancellationToken cancellationToken)
         {
             var enter = _mapper.Map<Domain.Models.Data>(command.Data);
             enter.UserId = command.UserId;
             var entity = await _dataManager.UpdateAsync(enter);
-            return new BaseModel
+            return new Domain.Models.Data
             {
                 Id = entity.Id
             };

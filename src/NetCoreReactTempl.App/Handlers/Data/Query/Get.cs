@@ -36,7 +36,7 @@ namespace NetCoreReactTempl.App.Handlers.Data.Query
             {
                 Id = data.Id,
                 UserId = data.UserId,
-                Fields = fields.ToDictionary(a => a.Key, a => a.Value)
+                Fields = fields.ToDictionary(a => a.Key, a => a.Value as object)
             };
         }
     }

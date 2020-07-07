@@ -14,7 +14,7 @@ namespace NetCoreReactTempl.App.Handlers.Data.Command
             : base(id, userId, data) { }
     }
 
-    public class CreateHandler : IRequestHandler<Create, BaseModel>
+    public class CreateHandler : IRequestHandler<Create, Domain.Models.Data>
     {
         private readonly IDataManager<Domain.Models.Data> _dataManager;
         private readonly IDataManager<Field> _fieldsManager;
@@ -25,7 +25,7 @@ namespace NetCoreReactTempl.App.Handlers.Data.Command
             _fieldsManager = fieldsManager;
         }
 
-        public async Task<BaseModel> Handle(Create command, CancellationToken cancellationToken)
+        public async Task<Domain.Models.Data> Handle(Create command, CancellationToken cancellationToken)
         {
             var data = await _dataManager.CreateAsync(new Domain.Models.Data()
             {
@@ -38,10 +38,10 @@ namespace NetCoreReactTempl.App.Handlers.Data.Command
                 {
                     DataId = data.Id,
                     Name = field.Key,
-                    Value = field.Value
+                    Value = field.Value.ToString()
                 });
             }
-            return new BaseModel
+            return new Domain.Models.Data
             {
                 Id = data.Id                
             };

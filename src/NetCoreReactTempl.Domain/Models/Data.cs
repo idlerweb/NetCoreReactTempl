@@ -6,6 +6,6 @@ namespace NetCoreReactTempl.Domain.Models
     {
         public long UserId { get; set; }
 
-        public Dictionary<string, string> Fields { get; set; }
+        public Dictionary<string, object> Fields { get; set; }
     }
 }
