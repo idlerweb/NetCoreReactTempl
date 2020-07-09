@@ -1,41 +1,39 @@
 ﻿using FluentValidation;
 using MediatR;
-using NetCoreReactTempl.Domain;
 using NetCoreReactTempl.Domain.Repositories;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace NetCoreReactTempl.App.Handlers.Auth.Command
 {
-    public class Delete : BaseCommand<Domain.Models.BaseModel>
+    public class Delete : BaseCommand<Domain.Models.BaseData>
     {
         public Delete(long id, long userId, Domain.Models.AuthInfo data)
             : base(id, userId, data) { }
     }
 
-    public class DeleteHandler : IRequestHandler<Delete, Domain.Models.BaseModel>
+    public class DeleteHandler : IRequestHandler<Delete, Domain.Models.BaseData>
     {
-        private readonly IDataManager<Domain.Models.User> _userManager;
+        private readonly IAuthManager _authManager;
 
-        public DeleteHandler(IDataManager<Domain.Models.User> userManager)
+        public DeleteHandler(IAuthManager authManager)
         {
-            _userManager = userManager;
+            _authManager = authManager;
         }
 
-        public async Task<Domain.Models.BaseModel> Handle(Delete command, CancellationToken cancellationToken)
+        public async Task<Domain.Models.BaseData> Handle(Delete command, CancellationToken cancellationToken)
         {
-            await _userManager.DeleteAsync(command.Id);
+            await _authManager.Delete(command.Id);
             return null;
         }
     }
 
     public class DeleteValidator : AbstractValidator<Delete>
     {
-        public DeleteValidator(IDataManager<Domain.Models.User> userManager)
+        public DeleteValidator(IAuthManager authManager)
         {
             RuleFor(c => c.UserId)
-                .MustAsync(async (c, ct) => (await userManager.GetCollection()).FirstOrDefault(u => u.Id == c)?.IsAdmin ?? false)
+                .MustAsync(async (c, ct) => (await authManager.Get(c))?.IsAdmin ?? false)
                 .WithMessage("No admin");
         }
     }

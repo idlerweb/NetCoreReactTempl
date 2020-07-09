@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.IdentityModel.Tokens;
-using NetCoreReactTempl.Domain;
 using NetCoreReactTempl.Domain.ApiExceptions;
 using NetCoreReactTempl.Domain.Configuration;
 using NetCoreReactTempl.Domain.Models;
@@ -25,13 +24,13 @@ namespace NetCoreReactTempl.App.Handlers.Auth.Command
 
     public class AuthorizationHandler : IRequestHandler<Authorization, AuthInfo>
     {
-        private readonly IDataManager<User> _userManager;
+        private readonly IAuthManager _authManager;
         private readonly IConfigurationStore _configurationStore;
 
-        public AuthorizationHandler(IDataManager<User> userManager, IConfigurationStore configurationStore)
+        public AuthorizationHandler(IConfigurationStore configurationStore, IAuthManager authManager)
         {
-            _userManager = userManager;
             _configurationStore = configurationStore;
+            _authManager = authManager;
         }
 
         public async Task<AuthInfo> Handle(Authorization command, CancellationToken cancellationToken)
@@ -61,13 +60,14 @@ namespace NetCoreReactTempl.App.Handlers.Auth.Command
                 Id = user.Id,
                 Email = user.Email,
                 IsVerify = user.IsVerify,
-                Token = tokenString
+                Token = tokenString,
+                UserId = user.Id
             };
         }
 
         private async Task<User> AuthenticateAsync(string email, string password)
         {
-            var user = (await _userManager.GetCollection()).FirstOrDefault(x => x.Email == email);
+            var user = (await _authManager.Get(email));
 
             if (user == null)
                 return null;

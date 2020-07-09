@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using NetCoreReactTempl.DAL.Entities;
+using System.Linq;
 
 namespace NetCoreReactTempl.DAL.Mapping
 {
@@ -6,7 +8,14 @@ namespace NetCoreReactTempl.DAL.Mapping
     {
         public DataProfile()
         {
-            CreateMap<Entities.Data, Domain.Models.Data>().ReverseMap();
+            CreateMap<Data, Domain.Models.Data>()
+                .ForMember(dest => dest.Fields, opt => opt.MapFrom(src => src.Fields.ToDictionary(k => k.Name, v => v.Value)));
+
+            CreateMap<Domain.Models.Data, Data>()
+                .ForMember(dest => dest.Fields, opt => opt.MapFrom(src => src.Fields.Select(f => new Field { 
+                    Name = f.Key,
+                    Value = f.Value.ToString()
+                })));
         }
     }
 }

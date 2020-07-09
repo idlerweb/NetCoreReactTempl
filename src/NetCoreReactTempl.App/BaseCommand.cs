@@ -3,7 +3,7 @@ using NetCoreReactTempl.Domain.Models;
 
 namespace NetCoreReactTempl.App
 {
-    public abstract class BaseCommand<TData> : IRequest<TData> where TData : BaseModel
+    public abstract class BaseCommand<TData> : IRequest<TData> where TData : BaseData
     {
         public readonly long Id;
         public readonly long UserId;

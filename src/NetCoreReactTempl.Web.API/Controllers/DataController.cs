@@ -18,19 +18,19 @@ namespace NetCoreReactTempl.Web.API.Controllers
 
 
         [HttpGet]
-        public override async Task<IActionResult> GetList(int top = 10, int skip = 0, string search = null) => 
+        public override async Task<IActionResult> GetList(int top = 10, int skip = 0, string search = null) =>
             Ok(new RestResponseBase<Data>(
                 list: await Mediator.Send(new App.Handlers.Data.Query.GetList(0, UserId, null, top, skip, search))
             ));
 
         [HttpGet("{id}")]
-        public override async Task<IActionResult> Get(long id) => 
+        public override async Task<IActionResult> Get(long id) =>
             Ok(new RestResponseBase<Data>(
                 data: await Mediator.Send(new App.Handlers.Data.Query.Get(id, UserId, null))
             ));
 
         [HttpPost]
-        public override async Task<IActionResult> Post(Dto.Data dto) => 
+        public override async Task<IActionResult> Post(Dto.Data dto) =>
             Ok(new RestResponseBase<Data>(
                 data: await Mediator.Send(new App.Handlers.Data.Command.Create(dto.Id, UserId, Mapper.Map<Data>(dto)))
             ));
@@ -42,8 +42,8 @@ namespace NetCoreReactTempl.Web.API.Controllers
             ));
 
         [HttpDelete("{id}")]
-        public override async Task<IActionResult> Delete(long id) => 
-            Ok(new RestResponseBase<BaseModel>(
+        public override async Task<IActionResult> Delete(long id) =>
+            Ok(new RestResponseBase<BaseData>(
                 data: await Mediator.Send(new App.Handlers.Data.Command.Delete(id, UserId, null))
             ));
     }

@@ -13,7 +13,7 @@ namespace NetCoreReactTempl.App
         public RestResponseBase(T data = null, IEnumerable<T> list = null)
         {
             Data = data;
-            List = list;            
+            List = list;
         }
     }
 }

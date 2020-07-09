@@ -1,14 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using NetCoreReactTempl.Domain.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace NetCoreReactTempl.Domain.Repositories
 {
-    public interface IDataManager<T>
+    public interface IDataManager<TData> where TData : BaseData
     {
-        Task<IEnumerable<T>> GetCollection();
-        Task<T> GetAsync(long id);
-        Task<T> CreateAsync(T entity);
-        Task<T> UpdateAsync(T entity);
-        Task DeleteAsync(long id);
+        Task<IEnumerable<TData>> GetUserData(long userId);
+        Task<IEnumerable<TData>> GetUserData(long userId, string fieldFilter);
+        Task<TData> GetData(long id);
+        Task<TData> Create(TData data);
+        Task<TData> Update(TData entity);
+        Task Delete(long id);
     }
 }

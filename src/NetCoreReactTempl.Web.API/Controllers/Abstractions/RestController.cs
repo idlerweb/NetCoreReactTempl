@@ -8,7 +8,7 @@ namespace NetCoreReactTempl.Web.API.Controllers.Abstractions
 {
     public abstract class RestController<TController, TDto> : CommonController<TController> where TController : class
                                                                                                        where TDto : Dto.BaseDto
-                                            
+
     {
         public RestController(IMediator mediator, IMapper mapper, ILogger<TController> logger)
             : base(mediator, mapper, logger)

@@ -37,14 +37,14 @@ namespace NetCoreReactTempl.Web.API.Controllers
             ));
 
         [HttpPut]
-        public override async Task<IActionResult> Put(Dto.AuthInfo dto) => 
+        public override async Task<IActionResult> Put(Dto.AuthInfo dto) =>
             Ok(new RestResponseBase<AuthInfo>(
                 data: await Mediator.Send(new App.Handlers.Auth.Command.Authorization(dto.Id, UserId, Mapper.Map<AuthInfo>(dto)))
             ));
 
         [HttpDelete("{id}")]
-        public override async Task<IActionResult> Delete(long id) => 
-            Ok(new RestResponseBase<BaseModel>(
+        public override async Task<IActionResult> Delete(long id) =>
+            Ok(new RestResponseBase<BaseData>(
                 data: await Mediator.Send(new App.Handlers.Auth.Command.Delete(id, UserId, null))
             ));
     }

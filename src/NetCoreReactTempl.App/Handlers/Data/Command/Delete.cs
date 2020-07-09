@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace NetCoreReactTempl.App.Handlers.Data.Command
 {
 
-    public class Delete : BaseCommand<BaseModel>
+    public class Delete : BaseCommand<BaseData>
     {
         public Delete(long id, long userId, Domain.Models.Data data)
             : base(id, userId, data) { }
     }
 
-    public class DeleteHandler : IRequestHandler<Delete, BaseModel>
+    public class DeleteHandler : IRequestHandler<Delete, BaseData>
     {
         private readonly IDataManager<Domain.Models.Data> _dataManager;
 
@@ -23,9 +23,9 @@ namespace NetCoreReactTempl.App.Handlers.Data.Command
             _dataManager = dataManager;
         }
 
-        public async Task<BaseModel> Handle(Delete command, CancellationToken cancellationToken)
+        public async Task<BaseData> Handle(Delete command, CancellationToken cancellationToken)
         {
-            await _dataManager.DeleteAsync(command.Id);
+            await _dataManager.Delete(command.Id);
             return null;
         }
     }
@@ -35,7 +35,7 @@ namespace NetCoreReactTempl.App.Handlers.Data.Command
         public DeleteValidator(IDataManager<Domain.Models.Data> dataManager)
         {
             RuleFor(c => c.Id).NotEmpty().WithMessage("Model not empty");
-            RuleFor(c => c).MustAsync(async (c, ct) => (await dataManager.GetAsync(c.Id)).UserId == c.UserId).WithMessage("You not autor");
+            RuleFor(c => c).MustAsync(async (c, ct) => (await dataManager.GetData(c.Id)).UserId == c.UserId).WithMessage("You not autor");
         }
     }
 }

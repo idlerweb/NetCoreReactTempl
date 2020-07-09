@@ -3,7 +3,6 @@ using MediatR;
 using NetCoreReactTempl.Domain.Repositories;
 using System.Threading;
 using System.Threading.Tasks;
-using NetCoreReactTempl.Domain.Models;
 
 namespace NetCoreReactTempl.App.Handlers.Data.Command
 {
@@ -17,33 +16,23 @@ namespace NetCoreReactTempl.App.Handlers.Data.Command
     public class CreateHandler : IRequestHandler<Create, Domain.Models.Data>
     {
         private readonly IDataManager<Domain.Models.Data> _dataManager;
-        private readonly IDataManager<Field> _fieldsManager;
 
-        public CreateHandler(IDataManager<Domain.Models.Data> dataManager, IDataManager<Field> fieldsManager)
+        public CreateHandler(IDataManager<Domain.Models.Data> dataManager)
         {
             _dataManager = dataManager;
-            _fieldsManager = fieldsManager;
         }
 
         public async Task<Domain.Models.Data> Handle(Create command, CancellationToken cancellationToken)
         {
-            var data = await _dataManager.CreateAsync(new Domain.Models.Data()
+            var data = await _dataManager.Create(new Domain.Models.Data()
             {
-                UserId = command.UserId
+                UserId = command.UserId,
+                Fields = command.Data.Fields
             });
 
-            foreach (var field in command.Data.Fields)
-            {
-                await _fieldsManager.CreateAsync(new Field()
-                {
-                    DataId = data.Id,
-                    Name = field.Key,
-                    Value = field.Value.ToString()
-                });
-            }
             return new Domain.Models.Data
             {
-                Id = data.Id                
+                Id = data.Id
             };
         }
     }

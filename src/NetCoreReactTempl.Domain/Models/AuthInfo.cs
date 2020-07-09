@@ -1,6 +1,6 @@
 ﻿namespace NetCoreReactTempl.Domain.Models
 {
-    public class AuthInfo : BaseModel
+    public class AuthInfo : BaseData
     {
         public string Email { get; set; }
         public string Password { get; set; }

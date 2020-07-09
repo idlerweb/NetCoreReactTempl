@@ -1,6 +1,6 @@
 ﻿namespace NetCoreReactTempl.Domain.Models
 {
-    public class User : BaseModel
+    public class User : BaseData
     {
         public string Email { get; set; }
         public byte[] PasswordHash { get; set; }

@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using MediatR;
-using NetCoreReactTempl.Domain;
 using NetCoreReactTempl.Domain.Models;
 using NetCoreReactTempl.Domain.Repositories;
 using System.Collections.Generic;
@@ -18,16 +17,16 @@ namespace NetCoreReactTempl.App.Handlers.Auth.Query
 
     public class GetListHandler : IRequestHandler<GetList, IEnumerable<AuthInfo>>
     {
-        private readonly IDataManager<User> _userManager;
+        private readonly IAuthManager _authManager;
 
-        public GetListHandler(IDataManager<User> userManager)
+        public GetListHandler(IAuthManager authManager)
         {
-            _userManager = userManager;
+            _authManager = authManager;
         }
 
         public async Task<IEnumerable<AuthInfo>> Handle(GetList command, CancellationToken cancellationToken)
         {
-            var users = await _userManager.GetCollection();
+            var users = await _authManager.Get();
             return users.Select(u => new AuthInfo()
             {
                 Id = u.Id,
@@ -40,10 +39,10 @@ namespace NetCoreReactTempl.App.Handlers.Auth.Query
 
     public class GetListValidator : AbstractValidator<GetList>
     {
-        public GetListValidator(IDataManager<User> userManager)
+        public GetListValidator(IAuthManager authManager)
         {
             RuleFor(c => c.UserId)
-                .MustAsync(async (c, ct) => (await userManager.GetCollection()).FirstOrDefault(u => u.Id == c)?.IsAdmin ?? false)
+                .MustAsync(async (c, ct) => (await authManager.Get(c))?.IsAdmin ?? false)
                 .WithMessage("No admin");
         }
     }

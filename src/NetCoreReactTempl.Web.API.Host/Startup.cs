@@ -44,7 +44,7 @@ namespace NetCoreReactTempl.Web.API.Host
             services.AddControllers(o =>
                 {
                     o.Filters.Add(new ApiExceptionFilterAttribute());
-                })                
+                })
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.WriteIndented = true;
@@ -84,9 +84,8 @@ namespace NetCoreReactTempl.Web.API.Host
                 };
             });
 
-            services.AddScoped<IDataManager<User>, DataManager<DAL.Entities.User, User>>();
+            services.AddScoped<IAuthManager, AuthManager>();
             services.AddScoped<IDataManager<Data>, DataManager<DAL.Entities.Data, Data>>();
-            services.AddScoped<IDataManager<Field>, DataManager<DAL.Entities.Field, Field>>();
             services.AddSingleton<IConfigurationStore, ConfigurationStore>();
 
 

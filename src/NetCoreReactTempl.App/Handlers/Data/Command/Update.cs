@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using MediatR;
-using NetCoreReactTempl.Domain;
-using NetCoreReactTempl.Domain.Models;
 using NetCoreReactTempl.Domain.Repositories;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,7 +30,7 @@ namespace NetCoreReactTempl.App.Handlers.Data.Command
         {
             var enter = _mapper.Map<Domain.Models.Data>(command.Data);
             enter.UserId = command.UserId;
-            var entity = await _dataManager.UpdateAsync(enter);
+            var entity = await _dataManager.Update(enter);
             return new Domain.Models.Data
             {
                 Id = entity.Id
@@ -45,7 +43,7 @@ namespace NetCoreReactTempl.App.Handlers.Data.Command
         public UpdateValidator(IDataManager<Domain.Models.Data> dataManager)
         {
             RuleFor(c => c.Data).NotEmpty().WithMessage("Model not empty");
-            RuleFor(c => c).MustAsync(async (c, ct) => (await dataManager.GetAsync(c.Id)).UserId == c.UserId).WithMessage("You not autor");
+            RuleFor(c => c).MustAsync(async (c, ct) => (await dataManager.GetData(c.Id)).UserId == c.UserId).WithMessage("You not autor");
         }
     }
 }

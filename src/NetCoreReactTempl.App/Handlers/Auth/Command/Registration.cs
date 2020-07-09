@@ -17,11 +17,11 @@ namespace NetCoreReactTempl.App.Handlers.Auth.Command
 
     public class RegistrationHandler : IRequestHandler<Registration, Domain.Models.AuthInfo>
     {
-        private readonly IDataManager<Domain.Models.User> _userManager;
+        private readonly IAuthManager _authManager;
 
-        public RegistrationHandler(IDataManager<Domain.Models.User> userManager)
+        public RegistrationHandler(IAuthManager authManager)
         {
-            _userManager = userManager;
+            _authManager = authManager;
         }
 
         public async Task<Domain.Models.AuthInfo> Handle(Registration command, CancellationToken cancellationToken)
@@ -32,7 +32,7 @@ namespace NetCoreReactTempl.App.Handlers.Auth.Command
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
 
-            var createdUser = await _userManager.CreateAsync(user);
+            var createdUser = await _authManager.Add(user);
 
             return new Domain.Models.AuthInfo()
             {
@@ -54,13 +54,13 @@ namespace NetCoreReactTempl.App.Handlers.Auth.Command
     public class RegistrationValidator : AbstractValidator<Registration>
     {
 
-        public RegistrationValidator(IDataManager<Domain.Models.User> userManager)
+        public RegistrationValidator(IAuthManager authManager)
         {
             var regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
             RuleFor(c => c.Data.Email).NotEmpty().Must(c => regex.IsMatch(c)).WithMessage("Email not valid");
             RuleFor(c => c.Data.Password).NotEmpty().WithMessage("Password is required");
             RuleFor(c => c.Data.Email)
-                .MustAsync(async (email, ct) => !(await userManager.GetCollection()).Any(u => u.Email == email))
+                .MustAsync(async (email, ct) => !(await authManager.EmailExist(email)))
                 .WithMessage("Email Exist");
         }
     }

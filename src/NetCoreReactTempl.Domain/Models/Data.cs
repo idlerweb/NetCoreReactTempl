@@ -1,11 +1,6 @@
-﻿using System.Collections.Generic;
-
-namespace NetCoreReactTempl.Domain.Models
+﻿namespace NetCoreReactTempl.Domain.Models
 {
-    public class Data : BaseModel
+    public class Data : BaseData
     {
-        public long UserId { get; set; }
-
-        public Dictionary<string, object> Fields { get; set; }
     }
 }
