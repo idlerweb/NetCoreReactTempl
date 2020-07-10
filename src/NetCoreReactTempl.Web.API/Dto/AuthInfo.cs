@@ -1,6 +1,4 @@
-﻿using NetCoreReactTempl.Web.API.Handlers.Abstractions;
-
-namespace NetCoreReactTempl.Web.API.Dto
+﻿namespace NetCoreReactTempl.Web.API.Dto
 {
     public class AuthInfo : BaseDto
     {

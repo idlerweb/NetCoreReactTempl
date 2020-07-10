@@ -1,4 +1,4 @@
-﻿import { handleError, config, handleResponseData } from './baseService';
+﻿import { handleError, config, handleResponseData, authHeader } from './baseService';
 import { mapRestUrl } from './mapRestUrl';
 
 export interface IRestServiceBase<T> {
@@ -18,7 +18,8 @@ export interface IRestResponseBase<T> {
 export class RestService<T> implements IRestServiceBase<T> {
     public getList(type: T, top: number = 10, skip: number = 0, search: string): Promise<IRestResponseBase<T>> {
         const requestOptions = {
-            method: 'GET'
+            method: 'GET',
+            headers: authHeader()
         };
 
         let url = config.apiUrl + mapRestUrl<T>(type) + `?top=${top}&skip=${skip}`;
@@ -31,7 +32,8 @@ export class RestService<T> implements IRestServiceBase<T> {
     }
     public get(type: T, id: number): Promise<IRestResponseBase<T>> {
         const requestOptions = {
-            method: 'GET'
+            method: 'GET',
+            headers: authHeader()
         };
 
         let url = config.apiUrl + mapRestUrl<T>(type);
@@ -42,11 +44,12 @@ export class RestService<T> implements IRestServiceBase<T> {
         return fetch(url, requestOptions).then(r => handleResponseData<IRestResponseBase<T>>(r), handleError);
     }
     public post(type: T, data: T): Promise<IRestResponseBase<T>> {
-
+ 
         const requestOptions = {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                ...authHeader(),
+                'Content-Type': 'application/json'                               
             },
             body: JSON.stringify(data)
         };
@@ -60,6 +63,7 @@ export class RestService<T> implements IRestServiceBase<T> {
         const requestOptions = {
             method: 'PUT',
             headers: {
+                ...authHeader(),
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(data)
@@ -74,6 +78,7 @@ export class RestService<T> implements IRestServiceBase<T> {
         const requestOptions = {
             method: 'DELETE',
             headers: {
+                ...authHeader(),
                 'Content-Type': 'application/json'
             },
         };

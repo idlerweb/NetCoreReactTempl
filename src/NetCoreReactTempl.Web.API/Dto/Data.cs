@@ -6,7 +6,6 @@ namespace NetCoreReactTempl.Web.API.Dto
     {
         public long UserId { get; set; }
 
-        public Dictionary<string, string> Fields { get; set; }
+        public Dictionary<string, object> Fields { get; set; }
     }
 }
-    
